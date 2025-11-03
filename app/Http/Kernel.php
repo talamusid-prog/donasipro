@@ -6,6 +6,11 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
+    // Tambahkan global middleware agar Laravel mempercayai header proxy
+    protected $middleware = [
+        \App\Http\Middleware\TrustProxies::class,
+    ];
+
     /**
      * The application's route middleware groups.
      *
@@ -39,4 +44,4 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\Admin::class,
         // middleware lain jika ada
     ];
-} 
+}
