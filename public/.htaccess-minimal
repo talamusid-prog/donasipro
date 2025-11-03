@@ -1,0 +1,15 @@
+# Minimal .htaccess for Shared Hosting
+# Use this if other .htaccess files don't work
+
+RewriteEngine On
+
+# Redirect all requests to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [L]
+
+# Prevent directory listing
+Options -Indexes
+
+# Set default index file
+DirectoryIndex index.php

@@ -1,0 +1,157 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mobile-sized container for desktop */
+@media (min-width: 768px) {
+  body {
+    background: #f3f4f6;
+  }
+  
+  /* Container untuk membatasi lebar seperti mobile */
+  .mobile-container {
+    max-width: 375px !important;
+    margin: 0 auto !important;
+    background: white;
+    min-height: 100vh;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+  
+  /* Header tetap di atas container */
+  .mobile-container header {
+    max-width: 375px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+  }
+  
+  /* Bottom navigation tetap di bawah container */
+  .mobile-container nav.fixed.bottom-0 {
+    max-width: 375px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    
+    /* Glassmorphism Effect untuk Desktop */
+    background: rgba(255, 255, 255, 0.6) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+  }
+}
+
+/* Glassmorphism Effect untuk Mobile Navigation (layar < 768px) */
+@media (max-width: 767px) {
+  .mobile-container nav.fixed.bottom-0 {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
+  }
+}
+
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* Prevent horizontal scroll on mobile */
+  html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-brand-blue hover:bg-brand-blue/80 text-white font-medium py-2 px-4 rounded-lg transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors;
+  }
+  
+  .card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200;
+  }
+  
+  .input-field {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent;
+  }
+  
+  /* Mobile-specific components */
+  .mobile-container {
+    @apply max-w-sm mx-auto;
+  }
+  
+  .mobile-card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4;
+  }
+  
+  .mobile-button {
+    @apply w-full bg-brand-blue text-white font-medium py-3 px-4 rounded-lg transition-colors active:bg-brand-blue/80;
+  }
+  
+  .mobile-input {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent text-base;
+  }
+}
+
+@layer utilities {
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  /* Animasi untuk infinite scroll logo */
+  .animate-scroll-left {
+    animation: scroll-left 25s linear infinite;
+  }
+
+  .animate-scroll-right {
+    animation: scroll-right 25s linear infinite;
+  }
+
+  @keyframes scroll-left {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  @keyframes scroll-right {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
+
+  /* CSS untuk testimoni scroll yang smooth */
+  #testimoni-track {
+    will-change: transform;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+  }
+
+  #testimoni-container {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Mencegah bergetar pada testimoni cards */
+  #testimoni-track .flex-shrink-0 {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+} 

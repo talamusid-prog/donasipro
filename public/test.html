@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Basic File Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .button { background: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin: 5px; display: inline-block; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>🔍 BASIC FILE ACCESS TEST</h1>
+    
+    <h2 class="success">✅ HTML FILE ACCESSIBLE!</h2>
+    <p>This means file upload to public directory is working.</p>
+    
+    <h2>🔧 TROUBLESHOOTING STEPS:</h2>
+    
+    <h3>Step 1: Fix .htaccess</h3>
+    <p>Current .htaccess is blocking PHP files. We need to create a minimal .htaccess:</p>
+    
+    <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
+        <strong>Create/Replace public/.htaccess with:</strong><br><br>
+        <code>
+        RewriteEngine On<br><br>
+        
+        # Direct file access for existing files<br>
+        RewriteCond %{REQUEST_FILENAME} -f<br>
+        RewriteRule .* - [L]<br><br>
+        
+        # Laravel routes for non-existing files<br>
+        RewriteCond %{REQUEST_FILENAME} !-f<br>
+        RewriteCond %{REQUEST_FILENAME} !-d<br>
+        RewriteRule ^(.*)$ index.php [L]<br><br>
+        
+        # MIME Types<br>
+        AddType text/css .css<br>
+        AddType application/javascript .js<br>
+        AddType image/png .png<br>
+        AddType image/jpeg .jpg<br>
+        AddType image/gif .gif<br>
+        AddType image/webp .webp
+        </code>
+    </div>
+    
+    <h3>Step 2: Test PHP Access</h3>
+    <p>After fixing .htaccess, test these files:</p>
+    <a href="test.php" class="button">🧪 Test PHP</a>
+    <a href="fix-path-mismatch.php" class="button">🔧 Fix Path Mismatch</a>
+    <a href="test-storage-access.php" class="button">📁 Test Storage</a>
+    
+    <h3>Step 3: Check Website</h3>
+    <a href="/" class="button">🏠 Home Page</a>
+    <a href="/storage/campaigns/1750909914_landing-page-design-RUMSHOL-OPSI-4-01-650x350.png" class="button">🖼️ Test Image</a>
+    
+    <h2>📋 MANUAL .HTACCESS CREATION:</h2>
+    <p><strong>If automated fixes don't work, manually create .htaccess file in public/ directory:</strong></p>
+    
+    <ol>
+        <li>Login to your hosting cPanel/File Manager</li>
+        <li>Navigate to <code>public/</code> directory</li>
+        <li>Create new file named <code>.htaccess</code></li>
+        <li>Copy the .htaccess content above</li>
+        <li>Save the file</li>
+        <li>Test PHP files again</li>
+    </ol>
+    
+    <h2>🆘 EMERGENCY SOLUTION:</h2>
+    <p>If .htaccess fixes don't work, we can fix the database paths directly via database manager:</p>
+    <div style="background: #fff3cd; padding: 15px; border-radius: 5px; margin: 15px 0;">
+        <strong>Database Query to Fix Paths:</strong><br><br>
+        <code>
+        -- Fix sliders paths<br>
+        UPDATE sliders SET image_url = REPLACE(image_url, '/storage/campaigns/', '/storage/sliders/') WHERE image_url LIKE '/storage/campaigns/%';<br><br>
+        
+        -- Fix campaigns paths<br>
+        UPDATE campaigns SET image_url = REPLACE(image_url, '/storage/sliders/', '/storage/campaigns/') WHERE image_url LIKE '/storage/sliders/%';
+        </code>
+    </div>
+    
+    <p><em>Run these queries in phpMyAdmin or your database management tool.</em></p>
+    
+    <script>
+        console.log('HTML file loaded successfully - basic file access working');
+    </script>
+</body>
+</html> 
