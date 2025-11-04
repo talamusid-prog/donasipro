@@ -2,28 +2,26 @@
 
 @section('title', 'Manajemen Channel Tripay')
 
-@section('content')
-<div class="container mx-auto px-4 py-6">
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">Manajemen Channel Tripay</h1>
-            <p class="text-gray-600 mt-1">Kelola channel pembayaran yang tersedia untuk donasi</p>
-        </div>
-        <div class="flex space-x-3">
-            <button onclick="testConnection()" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
-                <i data-lucide="wifi" class="w-4 h-4 mr-2"></i>
-                Test Koneksi
+@section('header-title', 'Manajemen Channel Tripay')
+@section('header-subtitle', 'Kelola channel pembayaran yang tersedia untuk donasi')
+
+@section('header-button')
+    <div class="flex space-x-2">
+        <button onclick="testConnection()" class="inline-flex items-center px-2 py-1 md:px-3 md:py-1.5 text-xs md:text-sm bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200">
+            <i data-lucide="wifi" class="w-3 h-3 md:w-4 md:h-4 mr-1"></i>
+            Test Koneksi
+        </button>
+        <form action="{{ route('admin.tripay-channels.sync') }}" method="POST" class="inline">
+            @csrf
+            <button type="submit" class="inline-flex items-center px-2 py-1 md:px-3 md:py-1.5 text-xs md:text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200">
+                <i data-lucide="refresh-cw" class="w-3 h-3 md:w-4 md:h-4 mr-1"></i>
+                Sync Channels
             </button>
-            <form action="{{ route('admin.tripay-channels.sync') }}" method="POST" class="inline">
-                @csrf
-                <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
-                    <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i>
-                    Sync Channels
-                </button>
-            </form>
-        </div>
+        </form>
     </div>
+@endsection
+
+@section('content')
 
     <!-- Status Messages -->
     @if(session('success'))
@@ -38,15 +36,16 @@
         </div>
     @endif
 
-    <!-- Tripay Settings -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900">Pengaturan Tripay</h3>
-            <p class="text-sm text-gray-500">Konfigurasi API dan kredensial Tripay</p>
-        </div>
-        
-        <div class="p-6">
-            <form action="{{ route('admin.tripay-settings.update') }}" method="POST">
+    <div class="space-y-6">
+        <!-- Tripay Settings -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900">Pengaturan Tripay</h3>
+                <p class="text-sm text-gray-500">Konfigurasi API dan kredensial Tripay</p>
+            </div>
+            
+            <div class="p-6">
+                <form action="{{ route('admin.tripay-settings.update') }}" method="POST">
                 @csrf
                 @method('PUT')
                 
@@ -424,4 +423,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 @endpush
-@endsection 
+@endsection

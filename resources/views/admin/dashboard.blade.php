@@ -7,51 +7,51 @@
 
 @section('content')
 <!-- Statistics Cards -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-    <div class="bg-white rounded-lg shadow p-6">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+    <div class="bg-white rounded-lg shadow p-4 md:p-6 overflow-hidden">
         <div class="flex items-center">
-            <div class="p-3 rounded-full bg-blue-100 text-blue-600">
-                <i data-lucide="heart" class="w-6 h-6"></i>
+            <div class="p-2 md:p-3 rounded-full bg-blue-100 text-blue-600 flex-shrink-0">
+                <i data-lucide="heart" class="w-4 h-4 md:w-6 md:h-6"></i>
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Total Campaign</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ $totalCampaigns }}</p>
+            <div class="ml-2 md:ml-4 min-w-0 flex-1">
+                <p class="text-xs md:text-sm font-medium text-gray-600 truncate">Total Campaign</p>
+                <p class="text-lg md:text-2xl font-semibold text-gray-900 truncate">{{ $totalCampaigns }}</p>
             </div>
         </div>
     </div>
     
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-4 md:p-6 overflow-hidden">
         <div class="flex items-center">
-            <div class="p-3 rounded-full bg-green-100 text-green-600">
-                <i data-lucide="gift" class="w-6 h-6"></i>
+            <div class="p-2 md:p-3 rounded-full bg-green-100 text-green-600 flex-shrink-0">
+                <i data-lucide="gift" class="w-4 h-4 md:w-6 md:h-6"></i>
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Total Donasi</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ $successfulDonationsCount }}</p>
+            <div class="ml-2 md:ml-4 min-w-0 flex-1">
+                <p class="text-xs md:text-sm font-medium text-gray-600 truncate">Total Donasi</p>
+                <p class="text-lg md:text-2xl font-semibold text-gray-900 truncate">{{ $successfulDonationsCount }}</p>
             </div>
         </div>
     </div>
     
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-4 md:p-6 overflow-hidden">
         <div class="flex items-center">
-            <div class="p-3 rounded-full bg-purple-100 text-purple-600">
-                <i data-lucide="users" class="w-6 h-6"></i>
+            <div class="p-2 md:p-3 rounded-full bg-purple-100 text-purple-600 flex-shrink-0">
+                <i data-lucide="users" class="w-4 h-4 md:w-6 md:h-6"></i>
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Total User</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ $totalUsers }}</p>
+            <div class="ml-2 md:ml-4 min-w-0 flex-1">
+                <p class="text-xs md:text-sm font-medium text-gray-600 truncate">Total User</p>
+                <p class="text-lg md:text-2xl font-semibold text-gray-900 truncate">{{ $totalUsers }}</p>
             </div>
         </div>
     </div>
     
-    <div class="bg-white rounded-lg shadow p-6">
+    <div class="bg-white rounded-lg shadow p-4 md:p-6 overflow-hidden">
         <div class="flex items-center">
-            <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
-                <i data-lucide="dollar-sign" class="w-6 h-6"></i>
+            <div class="p-2 md:p-3 rounded-full bg-yellow-100 text-yellow-600 flex-shrink-0">
+                <i data-lucide="dollar-sign" class="w-4 h-4 md:w-6 md:h-6"></i>
             </div>
-            <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Dana Terkumpul</p>
-                <p class="text-xl font-semibold text-gray-900">Rp {{ number_format($totalDonations, 0, ',', '.') }}</p>
+            <div class="ml-2 md:ml-4 min-w-0 flex-1">
+                <p class="text-xs md:text-sm font-medium text-gray-600 truncate">Dana Terkumpul</p>
+                <p class="text-sm md:text-xl font-semibold text-gray-900 truncate break-words">Rp {{ number_format($totalDonations, 0, ',', '.') }}</p>
             </div>
         </div>
     </div>
@@ -213,55 +213,6 @@
     </div>
 </div>
 
-<!-- Floating Action Button -->
-<div class="fixed bottom-6 right-6 z-[99999]">
-    <!-- Main FAB Button -->
-    <button id="fabButton" class="w-16 h-16 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 flex items-center justify-center group cursor-pointer" onclick="toggleFabMenu()">
-        <i data-lucide="plus" class="w-7 h-7 transition-transform duration-300" id="fabIcon"></i>
-    </button>
-    
-    <!-- FAB Menu Items -->
-    <div id="fabMenu" class="absolute right-0 hidden min-w-[280px] bg-white rounded-xl shadow-2xl p-4 border border-gray-200" style="z-index: 99999; bottom: 150px;">
-        <!-- Add Campaign -->
-        <div class="mb-3" id="fabItem1">
-            <a href="{{ route('admin.campaigns.create') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all duration-300 group">
-                <div class="p-3 bg-blue-100 rounded-lg mr-4">
-                    <i data-lucide="plus" class="w-5 h-5 text-blue-600"></i>
-                </div>
-                <div class="flex-1">
-                    <p class="text-sm font-semibold text-gray-900">Tambah Campaign</p>
-                    <p class="text-xs text-gray-500">Buat campaign donasi baru</p>
-                </div>
-            </a>
-        </div>
-        
-        <!-- View Donations -->
-        <div class="mb-3" id="fabItem2">
-            <a href="{{ route('admin.donations.index') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all duration-300 group">
-                <div class="p-3 bg-green-100 rounded-lg mr-4">
-                    <i data-lucide="list" class="w-5 h-5 text-green-600"></i>
-                </div>
-                <div class="flex-1">
-                    <p class="text-sm font-semibold text-gray-900">Lihat Donasi</p>
-                    <p class="text-xs text-gray-500">Kelola data donasi</p>
-                </div>
-            </a>
-        </div>
-        
-        <!-- Manage Users -->
-        <div class="mb-3" id="fabItem3">
-            <a href="{{ route('admin.users.index') }}" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-all duration-300 group">
-                <div class="p-3 bg-purple-100 rounded-lg mr-4">
-                    <i data-lucide="users" class="w-5 h-5 text-purple-600"></i>
-                </div>
-                <div class="flex-1">
-                    <p class="text-sm font-semibold text-gray-900">Kelola User</p>
-                    <p class="text-xs text-gray-500">Manajemen pengguna</p>
-                </div>
-            </a>
-        </div>
-    </div>
-</div>
 
 <!-- Modern Confirmation Modal -->
 <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
@@ -667,319 +618,8 @@ notificationStyle.textContent = `
         background-color: transparent !important;
     }
     
-    /* FAB Styles */
-    .shadow-3xl {
-        box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
-    }
-    
-    /* Ensure FAB is always visible */
-    #fabButton {
-        position: fixed !important;
-        bottom: 24px !important;
-        right: 24px !important;
-        z-index: 99999 !important;
-    }
-    
-    #fabMenu {
-        z-index: 99999 !important;
-        position: absolute !important;
-        bottom: 150px !important;
-        right: 0 !important;
-        background: white !important;
-        border-radius: 12px !important;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-        border: 1px solid #e5e7eb !important;
-        min-width: 280px !important;
-        padding: 16px !important;
-        transform-origin: bottom right !important;
-    }
-    
-    /* FAB Menu Animation */
-    #fabMenu {
-        transform-origin: bottom right;
-    }
-    
-    #fabItem1, #fabItem2, #fabItem3 {
-        transform-origin: center;
-    }
-    
-    /* Debug styles */
-    #fabMenu:not(.hidden) {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-    
-    /* Force menu visibility */
-    #fabMenu[style*="display: block"] {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        z-index: 9998 !important;
-    }
-    
-    /* Ensure menu is above everything */
-    #fabMenu {
-        position: absolute !important;
-        z-index: 9998 !important;
-        background: white !important;
-        border: 1px solid #e5e7eb !important;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
-    }
-    
-    /* Override any conflicting styles */
-    #fabMenu:not(.hidden) {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-    
-    /* Force visibility when display is block */
-    #fabMenu[style*="display: block"] {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        z-index: 99999 !important;
-    }
-    
-    /* Additional force styles */
-    #fabMenu {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        z-index: 99999 !important;
-        transform-origin: bottom right !important;
-    }
-    
-    /* When menu is supposed to be visible */
-    #fabMenu:not(.hidden) {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        pointer-events: auto !important;
-        transform: scale(1) translateY(0) !important;
-        z-index: 99999 !important;
-    }
-    
-    /* When menu is hidden */
-    #fabMenu.hidden {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        transform: scale(0.8) translateY(20px) !important;
-    }
-    
-    /* Ensure FAB container is above everything */
-    .fixed.bottom-6.right-6 {
-        z-index: 99999 !important;
-        position: fixed !important;
-    }
-    
-    /* Override any sidebar z-index */
-    #fabMenu, #fabButton {
-        z-index: 99999 !important;
-    }
-    
-    /* Force above sidebar and any other elements */
-    #fabMenu {
-        z-index: 999999 !important;
-        position: absolute !important;
-        background: white !important;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-    }
-    
-    /* Ensure FAB button is also above everything */
-    #fabButton {
-        z-index: 999999 !important;
-        position: fixed !important;
-    }
-    
-    /* Override any existing z-index from parent elements */
-    .fixed.bottom-6.right-6 {
-        z-index: 999999 !important;
-    }
-    
-    /* Most aggressive z-index override */
-    div[id="fabMenu"] {
-        z-index: 999999 !important;
-        position: absolute !important;
-        background: white !important;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
-        border: 2px solid #e5e7eb !important;
-        bottom: 150px !important;
-        right: 0 !important;
-        transform-origin: bottom right !important;
-    }
-    
-    button[id="fabButton"] {
-        z-index: 999999 !important;
-        position: fixed !important;
-    }
-    
-    /* Override any sidebar or navigation z-index */
-    * {
-        z-index: auto !important;
-    }
-    
-    #fabMenu, #fabButton, .fixed.bottom-6.right-6 {
-        z-index: 999999 !important;
-    }
-    
-    /* Force menu to be on the right side */
-    #fabMenu {
-        left: auto !important;
-        right: 0 !important;
-        transform: translateX(0) !important;
-        position: absolute !important;
-    }
-    
-    /* Override any left positioning */
-    #fabMenu[style*="left"] {
-        left: auto !important;
-        right: 0 !important;
-    }
-    
-    /* Most specific override for positioning */
-    div[id="fabMenu"] {
-        left: auto !important;
-        right: 0 !important;
-        bottom: 150px !important;
-        position: absolute !important;
-        transform: translateX(0) !important;
-    }
-    
-    /* Ensure parent container doesn't affect positioning */
-    .fixed.bottom-6.right-6 {
-        position: relative !important;
-    }
-    
-    /* Force right alignment */
-    #fabMenu {
-        margin-left: auto !important;
-        margin-right: 0 !important;
-        left: auto !important;
-        right: 0 !important;
-    }
-    
-    /* Ensure menu appears above FAB button */
-    #fabMenu {
-        bottom: 150px !important;
-        right: 0 !important;
-        margin-bottom: 4px !important;
-        position: absolute !important;
-        transform: translateX(0) !important;
-    }
-    
-    /* Add arrow pointing to FAB button */
-    #fabMenu::after {
-        content: '';
-        position: absolute;
-        bottom: -6px;
-        right: 20px;
-        width: 0;
-        height: 0;
-        border-left: 6px solid transparent;
-        border-right: 6px solid transparent;
-        border-top: 6px solid white;
-        filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-    }
 `;
 document.head.appendChild(notificationStyle);
 
-// FAB Menu Functions
-let fabMenuOpen = false;
-
-function toggleFabMenu() {
-    const fabMenu = document.getElementById('fabMenu');
-    const fabIcon = document.getElementById('fabIcon');
-    const fabButton = document.getElementById('fabButton');
-    
-    console.log('FAB Button clicked!'); // Debug log
-    console.log('FAB Menu element:', fabMenu); // Debug log
-    console.log('Current classes:', fabMenu.className); // Debug log
-    
-    if (!fabMenuOpen) {
-        // Open menu
-        console.log('Opening FAB menu...'); // Debug log
-        
-        // Remove hidden class
-        fabMenu.classList.remove('hidden');
-        
-        // Change button appearance
-        fabIcon.style.transform = 'rotate(45deg)';
-        fabButton.classList.add('bg-red-600', 'hover:bg-red-700');
-        fabButton.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-        
-        fabMenuOpen = true;
-        console.log('FAB menu opened!'); // Debug log
-        console.log('Menu classes after opening:', fabMenu.className); // Debug log
-    } else {
-        // Close menu
-        console.log('Closing FAB menu...'); // Debug log
-        
-        // Change button appearance back
-        fabIcon.style.transform = 'rotate(0deg)';
-        fabButton.classList.remove('bg-red-600', 'hover:bg-red-700');
-        fabButton.classList.add('bg-blue-600', 'hover:bg-blue-700');
-        
-        // Hide menu
-        fabMenu.classList.add('hidden');
-        
-        fabMenuOpen = false;
-        console.log('FAB menu closed!'); // Debug log
-    }
-}
-
-// Initialize FAB on page load
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('FAB initialized!'); // Debug log
-    const fabButton = document.getElementById('fabButton');
-    const fabMenu = document.getElementById('fabMenu');
-    
-    if (fabButton) {
-        console.log('FAB button found!'); // Debug log
-    } else {
-        console.error('FAB button not found!'); // Debug log
-    }
-    
-    if (fabMenu) {
-        console.log('FAB menu found!'); // Debug log
-        console.log('FAB menu classes:', fabMenu.className); // Debug log
-    } else {
-        console.error('FAB menu not found!'); // Debug log
-    }
-    
-    // Test menu visibility
-    setTimeout(() => {
-        if (fabMenu) {
-            console.log('Testing menu visibility...');
-            fabMenu.classList.remove('hidden');
-            console.log('Menu should be visible now');
-            console.log('Menu classes:', fabMenu.className);
-            
-            setTimeout(() => {
-                fabMenu.classList.add('hidden');
-                console.log('Menu hidden again');
-            }, 3000);
-        }
-    }, 1000);
-});
-
-// Close FAB menu when clicking outside
-document.addEventListener('click', function(e) {
-    const fabButton = document.getElementById('fabButton');
-    const fabMenu = document.getElementById('fabMenu');
-    
-    if (fabMenuOpen && !fabButton.contains(e.target) && !fabMenu.contains(e.target)) {
-        toggleFabMenu();
-    }
-});
-
-// Close FAB menu with Escape key
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && fabMenuOpen) {
-        toggleFabMenu();
-    }
-});
 </script>
 @endpush 

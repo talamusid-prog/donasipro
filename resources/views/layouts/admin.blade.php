@@ -15,8 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css">
     
     <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('build/assets/app-CfiNuBOo.css') }}">
-    <script src="{{ asset('build/assets/app-DaBYqt0m.js') }}" defer></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <!-- Custom CSS for Primary Color -->
     @if(isset($customCSS))
@@ -30,7 +29,7 @@
 <body class="bg-gray-100 font-sans">
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
-        <aside class="w-64 bg-white shadow-lg flex flex-col fixed inset-y-0 left-0 z-50">
+        <aside id="sidebar" class="w-64 bg-white shadow-lg flex flex-col fixed inset-y-0 left-0 z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
             <div class="h-20 flex items-center justify-center border-b flex-shrink-0">
                 <span class="font-bold text-xl text-blue-700">Admin Panel</span>
             </div>
@@ -91,12 +90,18 @@
         </aside>
         
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col min-w-0 ml-64">
+        <div class="flex-1 flex flex-col min-w-0 lg:ml-64 transition-all duration-300 ease-in-out">
             <!-- Header -->
-            <header class="h-20 bg-white shadow flex items-center justify-between px-8 flex-shrink-0">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-800">@yield('header-title')</h1>
-                    <p class="text-gray-500 text-sm">@yield('header-subtitle')</p>
+            <header class="h-16 md:h-20 bg-white shadow flex items-center justify-between px-4 md:px-8 flex-shrink-0">
+                <div class="flex items-center">
+                    <!-- Mobile Sidebar Toggle Button -->
+                    <button id="sidebar-toggle" class="lg:hidden mr-2 p-1 rounded-md text-gray-700 hover:bg-gray-100">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                    <div>
+                        <h1 class="text-lg md:text-2xl font-bold text-gray-800">@yield('header-title')</h1>
+                        <p class="text-xs md:text-sm text-gray-500">@yield('header-subtitle')</p>
+                    </div>
                 </div>
                 <div>
                     @yield('header-button')
@@ -104,7 +109,7 @@
             </header>
             
             <!-- Content -->
-            <main class="flex-1 p-8 overflow-y-auto">
+            <main class="flex-1 px-4 py-4 md:px-8 md:py-8 overflow-y-auto">
                 @if(session('success'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6" role="alert">
                         {{ session('success') }}
@@ -129,5 +134,26 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @stack('scripts')
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            
+            function toggleSidebar() {
+                sidebar.classList.toggle('-translate-x-full');
+            }
+            
+            sidebarToggle.addEventListener('click', toggleSidebar);
+            
+            // Close sidebar on window resize if in mobile view
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 1024 && !sidebar.classList.contains('-translate-x-full')) {
+                    sidebar.classList.add('-translate-x-full');
+                }
+            });
+        });
+    </script>
 </body>
-</html> 
+</html>

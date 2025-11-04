@@ -91,4 +91,20 @@ class Donation extends Model
         $aminUsers = $this->amin_users ?? [];
         return in_array($userId, $aminUsers);
     }
-} 
+    
+    /**
+     * Get payment URL accessor
+     * 
+     * @return string
+     */
+    public function getPaymentUrlAttribute()
+    {
+        // Jika ada tripay_payment_url, gunakan itu
+        if (!empty($this->tripay_payment_url)) {
+            return $this->tripay_payment_url;
+        }
+        
+        // Jika tidak ada, gunakan URL halaman pembayaran donasi dengan format donations/{id}/payment
+        return url("donations/{$this->id}/payment");
+    }
+}

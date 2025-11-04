@@ -2,101 +2,92 @@
 
 @section('title', 'Manajemen Rekening Bank')
 
-@section('content')
-<div class="container mx-auto px-4 py-6">
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-gray-900">Manajemen Rekening Bank</h1>
-        <a href="{{ route('admin.bank-accounts.create') }}" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
-            <i data-lucide="plus" class="w-4 h-4 mr-2"></i>
-            Tambah Rekening
-        </a>
-    </div>
+@section('header-title', 'Manajemen Rekening Bank')
+@section('header-subtitle', 'Kelola rekening bank untuk donasi')
 
+@section('header-button')
+    <a href="{{ route('admin.bank-accounts.create') }}" class="inline-flex items-center px-2 py-1 md:px-3 md:py-1.5 text-xs md:text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200">
+        <i data-lucide="plus" class="w-3 h-3 md:w-4 md:h-4 mr-1"></i>
+        Tambah Rekening
+    </a>
+@endsection
+
+@section('content')
     @if(session('success'))
         <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6">
             {{ session('success') }}
         </div>
     @endif
 
-    @php
-        $tripay = new \App\Services\TripayService();
-        $channels = $tripay->getVAPaymentMethods();
-    @endphp
-    <div class="mb-6">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 flex items-center gap-6">
-            <div class="flex-shrink-0">
-                <img src="https://tripay.co.id/images/logo-tripay.png" alt="Tripay" class="w-16 h-16 object-contain">
-            </div>
-            <div class="flex-1">
-                <div class="flex items-center gap-2 mb-2">
-                    <span class="text-lg font-semibold text-gray-900">Integrasi Tripay</span>
-                    @if($channels && count($channels) > 0)
-                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            <i data-lucide="check-circle" class="w-4 h-4 mr-1"></i> Terhubung
-                        </span>
-                    @else
-                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                            <i data-lucide="x-circle" class="w-4 h-4 mr-1"></i> Gagal Terhubung
-                        </span>
-                    @endif
-                </div>
-                <div class="text-sm text-gray-700 mb-2">
-                    @if($channels && count($channels) > 0)
-                        <span>Channel Virtual Account aktif:</span>
-                        <ul class="flex flex-wrap gap-4 mt-2">
-                            @foreach($channels as $ch)
-                                <li class="flex items-center gap-2 bg-gray-50 rounded px-3 py-1">
-                                    <img src="{{ $ch['logo'] }}" alt="{{ $ch['name'] }}" class="w-6 h-6 object-contain">
-                                    <span class="font-medium">{{ $ch['name'] }}</span>
-                                </li>
-                            @endforeach
-                        </ul>
-                    @else
-                        <span class="text-red-600">Tidak dapat mengambil data channel Tripay. Periksa API Key dan koneksi internet.</span>
-                    @endif
-                </div>
-            </div>
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-800">Integrasi Tripay</h2>
         </div>
-    </div>
-
-    <!-- Tripay Status -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center">
-                <i data-lucide="credit-card" class="w-6 h-6 text-blue-600 mr-3"></i>
-                <h3 class="text-lg font-semibold text-gray-900">Status Tripay</h3>
-            </div>
+        
+        <div class="p-6">
             @php
                 $tripay = new \App\Services\TripayService();
+                $channels = $tripay->getVAPaymentMethods();
                 $connectionStatus = $tripay->testConnection();
                 $enabledChannels = \App\Models\TripayChannel::enabled()->active()->count();
                 $totalChannels = \App\Models\TripayChannel::count();
             @endphp
-            @if($connectionStatus['success'])
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                    <i data-lucide="check-circle" class="w-3 h-3 mr-1"></i>
-                    Terhubung
-                </span>
+            
+            <div class="flex items-center gap-6 mb-6">
+                <div class="flex-shrink-0">
+                    <img src="https://tripay.co.id/images/logo-tripay.png" alt="Tripay" class="w-16 h-16 object-contain">
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-lg font-semibold text-gray-900">Status Tripay</span>
+                        @if($connectionStatus['success'])
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <i data-lucide="check-circle" class="w-3 h-3 mr-1"></i>
+                                Terhubung
+                            </span>
+                        @else
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                <i data-lucide="x-circle" class="w-3 h-3 mr-1"></i>
+                                Gagal Terhubung
+                            </span>
+                        @endif
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Channel Aktif:</span>
+                            <span class="text-sm font-medium text-gray-900">{{ $enabledChannels }} / {{ $totalChannels }}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Status API:</span>
+                            <span class="text-sm font-medium {{ $connectionStatus['success'] ? 'text-green-600' : 'text-red-600' }}">
+                                {{ $connectionStatus['success'] ? 'Berfungsi' : 'Gagal' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            @if($channels && count($channels) > 0)
+                <div class="mt-4">
+                    <h3 class="text-sm font-medium text-gray-700 mb-2">Channel Virtual Account aktif:</h3>
+                    <ul class="flex flex-wrap gap-3">
+                        @foreach($channels as $ch)
+                            <li class="flex items-center gap-2 bg-gray-50 rounded px-3 py-1.5 border border-gray-100">
+                                <img src="{{ $ch['logo'] }}" alt="{{ $ch['name'] }}" class="w-5 h-5 object-contain">
+                                <span class="text-sm font-medium">{{ $ch['name'] }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
             @else
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                    <i data-lucide="x-circle" class="w-3 h-3 mr-1"></i>
-                    Gagal Terhubung
-                </span>
+                <div class="text-sm text-red-600 bg-red-50 p-3 rounded-md mt-4">
+                    Tidak dapat mengambil data channel Tripay. Periksa API Key dan koneksi internet.
+                </div>
             @endif
-        </div>
-        <div class="space-y-3">
-            <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Channel Aktif:</span>
-                <span class="text-sm font-medium text-gray-900">{{ $enabledChannels }} / {{ $totalChannels }}</span>
-            </div>
-            <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Status API:</span>
-                <span class="text-sm font-medium {{ $connectionStatus['success'] ? 'text-green-600' : 'text-red-600' }}">
-                    {{ $connectionStatus['success'] ? 'Berfungsi' : 'Gagal' }}
-                </span>
-            </div>
+            
             @if(!$connectionStatus['success'])
-                <div class="text-xs text-red-600 bg-red-50 p-2 rounded">
+                <div class="text-xs text-red-600 bg-red-50 p-3 rounded-md mt-4">
                     {{ $connectionStatus['message'] }}
                 </div>
             @endif
@@ -109,7 +100,11 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+    <div class="bg-white rounded-lg shadow mt-6">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-800">Daftar Rekening Bank</h2>
+        </div>
+        
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -224,4 +219,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

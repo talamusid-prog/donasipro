@@ -268,23 +268,49 @@ class WhatsAppService
             // Log response untuk debugging
             Log::info('WA Blast API Response Status: ' . $response->status());
             Log::info('WA Blast API Response Body: ' . $response->body());
-
+            Log::info('WA Blast API Response Headers: ' . json_encode($response->headers()));
+            
+            // Check if response is successful
             if ($response->successful()) {
                 $data = $response->json();
-                Log::info("WA Blast API: Message sent to {$formattedPhone}");
-                return [
-                    'success' => true,
-                    'message' => 'Pesan berhasil dikirim',
-                    'method' => 'wa_blast_api',
-                    'data' => $data
-                ];
+                Log::info("WA Blast API: Message sent to {$formattedPhone}", ['response_data' => $data]);
+                
+                // Check response data structure
+                if (isset($data['success']) && $data['success']) {
+                    return [
+                        'success' => true,
+                        'message' => $data['message'] ?? 'Pesan berhasil dikirim',
+                        'method' => 'wa_blast_api',
+                        'data' => $data['data'] ?? $data
+                    ];
+                } else {
+                    // Response HTTP 200 tapi success = false
+                    Log::warning('WA Blast API returned success=false in response', ['data' => $data]);
+                    return [
+                        'success' => false,
+                        'message' => $data['message'] ?? $data['error'] ?? 'Gagal kirim pesan',
+                        'method' => 'wa_blast_api',
+                        'error_code' => $data['error_code'] ?? null
+                    ];
+                }
             } else {
-                $errorData = $response->json() ?: [];
-                Log::error('WA Blast API error: ' . json_encode($errorData));
+                // HTTP error status
+                $errorData = $response->json();
+                $errorMessage = 'Unknown error';
+                
+                if ($errorData) {
+                    $errorMessage = $errorData['message'] ?? $errorData['error'] ?? 'Unknown error';
+                    Log::error('WA Blast API error response: ' . json_encode($errorData));
+                } else {
+                    $errorMessage = 'HTTP ' . $response->status() . ': ' . $response->body();
+                    Log::error('WA Blast API error (non-JSON): ' . $errorMessage);
+                }
+                
                 return [
                     'success' => false,
-                    'message' => 'Gagal kirim pesan: ' . ($errorData['message'] ?? 'Unknown error'),
-                    'error_code' => $errorData['error_code'] ?? null
+                    'message' => 'Gagal kirim pesan: ' . $errorMessage,
+                    'error_code' => $errorData['error_code'] ?? $response->status(),
+                    'http_status' => $response->status()
                 ];
             }
 

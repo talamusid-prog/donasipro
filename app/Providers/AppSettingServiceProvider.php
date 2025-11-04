@@ -37,7 +37,6 @@ class AppSettingServiceProvider extends ServiceProvider
                 :root {
                     --primary-color: {$primaryColor};
                 }
-                
                 .bg-primary {
                     background-color: {$primaryColor} !important;
                 }

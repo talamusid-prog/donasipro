@@ -49,6 +49,41 @@ class DonationController extends Controller
         return view('admin.donations.show', compact('donation'));
     }
 
+    public function create()
+    {
+        $campaigns = Campaign::all();
+        return view('admin.donations.create', compact('campaigns'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'campaign_id' => 'required|exists:campaigns,id',
+            'donor_name' => 'required|string|max:255',
+            'donor_email' => 'required|email|max:255',
+            'donor_phone' => 'required|string|max:20',
+            'amount' => 'required|numeric|min:1000',
+            'payment_method' => 'required|string',
+            'payment_status' => 'required|in:pending,paid,failed,expired',
+        ]);
+
+        $donation = Donation::create([
+            'campaign_id' => $request->campaign_id,
+            'user_id' => auth()->id(),
+            'donor_name' => $request->donor_name,
+            'donor_email' => $request->donor_email,
+            'donor_phone' => $request->donor_phone,
+            'amount' => $request->amount,
+            'payment_method' => $request->payment_method,
+            'payment_status' => $request->payment_status,
+            'message' => $request->message,
+            'is_anonymous' => $request->has('is_anonymous'),
+        ]);
+
+        return redirect()->route('admin.donations.show', $donation)
+            ->with('success', 'Donasi berhasil ditambahkan.');
+    }
+
     public function updateStatus(Request $request, Donation $donation)
     {
         $request->validate([

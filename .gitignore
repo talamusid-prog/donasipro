@@ -16,6 +16,12 @@
 /public/build
 /public/hot
 /public/storage
+# Allow campaign images
+!/public/storage/campaigns
+!/public/storage/categories
+!/public/storage/sliders
+!/public/storage/bank-logos
+!/public/storage/editor-images
 /storage/*.key
 /storage/pail
 /vendor

@@ -162,12 +162,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('categories', AdminCategoryController::class);
     
     // Admin Donation Management
+    Route::get('/donations/export', [AdminDonationController::class, 'export'])->name('donations.export');
+    Route::get('/donations/create', [AdminDonationController::class, 'create'])->name('donations.create');
+    Route::post('/donations', [AdminDonationController::class, 'store'])->name('donations.store');
     Route::get('/donations', [AdminDonationController::class, 'index'])->name('donations.index');
     Route::get('/donations/{donation}', [AdminDonationController::class, 'show'])->name('donations.show');
+    Route::get('/donations/{donation}/edit', [AdminDonationController::class, 'edit'])->name('donations.edit');
+    Route::put('/donations/{donation}', [AdminDonationController::class, 'update'])->name('donations.update');
+    Route::delete('/donations/{donation}', [AdminDonationController::class, 'destroy'])->name('donations.destroy');
     Route::patch('/donations/{donation}/status', [AdminDonationController::class, 'updateStatus'])->name('donations.update-status');
     Route::post('/donations/{donation}/confirm', [AdminDonationController::class, 'confirm'])->name('donations.confirm');
     Route::post('/donations/{donation}/reject', [AdminDonationController::class, 'reject'])->name('donations.reject');
-    Route::get('/donations/export', [AdminDonationController::class, 'export'])->name('donations.export');
     
     // Admin User Management
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');

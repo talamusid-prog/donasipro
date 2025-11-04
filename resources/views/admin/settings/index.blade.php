@@ -9,11 +9,15 @@
 <div class="flex gap-2">
     <form method="POST" action="{{ route('admin.settings.reset') }}" onsubmit="return confirm('Apakah Anda yakin ingin mereset semua pengaturan ke nilai default?')">
         @csrf
-        <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition">
-            <i data-lucide="refresh-cw" class="w-4 h-4 inline mr-2"></i>
+        <button type="submit" class="px-2 py-1 md:px-3 md:py-1.5 text-xs md:text-sm bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors duration-200">
+            <i data-lucide="refresh-cw" class="w-3 h-3 md:w-4 md:h-4 inline mr-1"></i>
             Reset Default
         </button>
     </form>
+    <button type="submit" form="settings-form" class="px-2 py-1 md:px-3 md:py-1.5 text-xs md:text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200">
+        <i data-lucide="save" class="w-3 h-3 md:w-4 md:h-4 mr-1"></i>
+        Simpan
+    </button>
 </div>
 @endsection
 
@@ -364,4 +368,4 @@
     [x-cloak] { display: none !important; }
 </style>
 @endpush
-@endsection 
+@endsection

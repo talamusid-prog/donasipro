@@ -21,10 +21,20 @@ class WABlastController extends Controller
      */
     public function index()
     {
+        // Read from database first, fallback to config (same as settings method)
+        $config = [
+            'base_url' => \App\Models\AppSetting::where('key', 'wa_blast_base_url')->value('value') 
+                         ?? config('whatsapp.wa_blast_api.base_url'),
+            'api_key' => \App\Models\AppSetting::where('key', 'wa_blast_api_key')->value('value') 
+                        ?? config('whatsapp.wa_blast_api.api_key'),
+            'session_id' => config('whatsapp.wa_blast_api.session_id'),
+            'enabled' => (\App\Models\AppSetting::where('key', 'wa_blast_enabled')->value('value') ?? config('whatsapp.wa_blast_api.enabled')) ? '1' : '0',
+        ];
+        
         $status = $this->whatsappService->getWABlastStatus();
         $method = config('whatsapp.method');
         
-        return view('admin.wa-blast.index', compact('status', 'method'));
+        return view('admin.wa-blast.index', compact('status', 'method', 'config'));
     }
 
     /**
@@ -61,28 +71,114 @@ class WABlastController extends Controller
      */
     public function sendTestMessage(Request $request)
     {
-        $request->validate([
-            'phone' => 'required|string',
-            'message' => 'required|string'
-        ]);
-
         try {
+            // Validasi input
+            $validated = $request->validate([
+                'phone' => 'required|string|min:10',
+                'message' => 'required|string|min:1'
+            ], [
+                'phone.required' => 'Nomor telepon wajib diisi',
+                'phone.min' => 'Nomor telepon minimal 10 karakter',
+                'message.required' => 'Pesan wajib diisi',
+                'message.min' => 'Pesan minimal 1 karakter',
+            ]);
+            
+            Log::info('WA Blast test message request', [
+                'phone' => $request->phone,
+                'message_length' => strlen($request->message)
+            ]);
+
+            // Validasi konfigurasi sebelum test
+            $baseUrl = \App\Models\AppSetting::where('key', 'wa_blast_base_url')->value('value') 
+                      ?? config('whatsapp.wa_blast_api.base_url');
+            $apiKey = \App\Models\AppSetting::where('key', 'wa_blast_api_key')->value('value') 
+                     ?? config('whatsapp.wa_blast_api.api_key');
+            $enabled = \App\Models\AppSetting::where('key', 'wa_blast_enabled')->value('value');
+            
+            // Check boolean value properly
+            if ($enabled === null) {
+                $enabled = config('whatsapp.wa_blast_api.enabled', false);
+            } else {
+                $enabled = (bool) $enabled || $enabled === '1';
+            }
+            
+            Log::info('WA Blast configuration check', [
+                'base_url' => $baseUrl ? 'set' : 'not set',
+                'api_key' => $apiKey ? 'set' : 'not set',
+                'enabled' => $enabled
+            ]);
+
+            if (!$baseUrl || !$apiKey) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'WA Blast API belum dikonfigurasi. Silakan setting Base URL dan API Key terlebih dahulu.',
+                    'details' => [
+                        'base_url' => $baseUrl ? '✓ Terkonfigurasi' : '✗ Belum dikonfigurasi',
+                        'api_key' => $apiKey ? '✓ Terkonfigurasi' : '✗ Belum dikonfigurasi',
+                    ]
+                ], 400);
+            }
+
+            if (!$enabled) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'WA Blast API tidak aktif. Silakan aktifkan di settings terlebih dahulu.',
+                ], 400);
+            }
+
+            // Kirim pesan test
             $result = $this->whatsappService->sendNotification(
                 $request->phone,
                 $request->message,
                 'test'
             );
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Pesan berhasil dikirim',
-                'data' => $result
+            // Cek hasil dari service
+            if (isset($result['success']) && $result['success']) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $result['message'] ?? 'Pesan berhasil dikirim',
+                    'data' => $result,
+                    'details' => [
+                        'method' => $result['method'] ?? 'wa_blast_api',
+                        'phone' => $request->phone,
+                        'timestamp' => now()->format('Y-m-d H:i:s')
+                    ]
+                ]);
+            } else {
+                // Jika service mengembalikan error
+                return response()->json([
+                    'success' => false,
+                    'message' => $result['message'] ?? 'Gagal mengirim pesan',
+                    'error_code' => $result['error_code'] ?? null,
+                    'details' => $result
+                ], 400);
+            }
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::warning('WA Blast test message validation error', [
+                'errors' => $e->errors()
             ]);
-        } catch (\Exception $e) {
-            Log::error('WA Blast test message error: ' . $e->getMessage());
+            
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+                'message' => 'Validasi gagal: ' . implode(', ', array_map(function($errors) {
+                    return implode(', ', $errors);
+                }, $e->errors())),
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error('WA Blast test message error: ' . $e->getMessage());
+            Log::error('WA Blast test message trace: ' . $e->getTraceAsString());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat mengirim pesan test',
+                'error' => $e->getMessage(),
+                'details' => [
+                    'exception' => get_class($e),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine()
+                ]
             ], 500);
         }
     }
@@ -134,11 +230,16 @@ class WABlastController extends Controller
      */
     public function settings()
     {
+        // Read from database first, fallback to config
         $config = [
-            'base_url' => config('whatsapp.wa_blast_api.base_url'),
-            'api_key' => config('whatsapp.wa_blast_api.api_key'),
+            'base_url' => \App\Models\AppSetting::where('key', 'wa_blast_base_url')->value('value') 
+                         ?? config('whatsapp.wa_blast_api.base_url'),
+            'api_key' => \App\Models\AppSetting::where('key', 'wa_blast_api_key')->value('value') 
+                        ?? config('whatsapp.wa_blast_api.api_key'),
+            'session_uuid' => \App\Models\AppSetting::where('key', 'wa_blast_session_uuid')->value('value') 
+                             ?? config('whatsapp.wa_blast_api.session_uuid', '7d549d3d-a951-478e-b4d7-c90e465bd706'),
             'session_id' => config('whatsapp.wa_blast_api.session_id'),
-            'enabled' => config('whatsapp.wa_blast_api.enabled'),
+            'enabled' => (\App\Models\AppSetting::where('key', 'wa_blast_enabled')->value('value') ?? config('whatsapp.wa_blast_api.enabled')) ? '1' : '0',
             'webhook_url' => config('whatsapp.wa_blast_api.webhook_url'),
         ];
         
@@ -195,11 +296,16 @@ class WABlastController extends Controller
                 ]
             );
 
-            // Clear config cache
+            // Clear all caches to ensure changes take effect
             \Artisan::call('config:clear');
+            \Artisan::call('cache:clear');
+            \Artisan::call('view:clear');
+            
+            // Clear application cache
+            \Illuminate\Support\Facades\Cache::flush();
 
             return redirect()->route('admin.wa-blast.settings')
-                ->with('success', 'Settings berhasil diperbarui');
+                ->with('success', 'Settings berhasil diperbarui. Cache telah di-clear.');
         } catch (\Exception $e) {
             Log::error('WA Blast settings update error: ' . $e->getMessage());
             return redirect()->route('admin.wa-blast.settings')

@@ -6,9 +6,10 @@
 @section('header-subtitle', 'Manajemen semua data donasi yang masuk')
 
 @section('header-button')
-    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-        Ekspor ke CSV
-    </button>
+    <a href="{{ route('admin.donations.create') }}" class="inline-flex items-center px-2 py-1 md:px-3 md:py-1.5 text-xs md:text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200">
+        <i data-lucide="plus" class="w-3 h-3 md:w-4 md:h-4 mr-1"></i>
+        Tambah Donasi
+    </a>
 @endsection
 
 @section('content')
@@ -149,4 +150,4 @@
             {{ $donations->links() }}
         </div>
     </div>
-@endsection 
+@endsection

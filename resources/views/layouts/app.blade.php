@@ -22,9 +22,8 @@
         $isProduction = true; // Paksa production mode
     @endphp
     
-    {{-- PRODUCTION MODE FORCED - NO MORE ERRORS --}}
-    <link rel="stylesheet" href="{{ asset('build/assets/app-CfiNuBOo.css') }}">
-    <script src="{{ asset('build/assets/app-DaBYqt0m.js') }}" defer></script>
+    {{-- Gunakan Vite dengan manifest untuk asset yang selalu up-to-date --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <!-- Custom CSS for Primary Color -->
     @if(isset($customCSS))
@@ -247,4 +246,4 @@
     
     @stack('scripts')
 </body>
-</html> 
+</html>
