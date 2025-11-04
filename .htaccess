@@ -91,6 +91,42 @@ Options -Indexes
 # Set default index file
 DirectoryIndex index.php
 
+# Security Headers
+<IfModule mod_headers.c>
+    # Strict-Transport-Security - Memaksa semua koneksi menggunakan HTTPS selama 1 tahun
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    
+    # X-Frame-Options - Mencegah clickjacking attacks
+    Header always set X-Frame-Options "DENY"
+    
+    # X-Content-Type-Options - Mencegah MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # X-XSS-Protection - Proteksi terhadap XSS attacks
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Referrer-Policy - Kontrol informasi referrer untuk privasi
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Permissions-Policy - Membatasi akses ke geolocation, microphone, dan camera
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+</IfModule>
+
+# HTTPS Parameter - Memberitahu Laravel bahwa koneksi aman
+<IfModule mod_setenvif.c>
+    SetEnvIf X-Forwarded-Proto "https" HTTPS=on
+</IfModule>
+
+# FastCGI HTTPS parameter untuk PHP-FPM
+<IfModule mod_fcgid.c>
+    SetEnvIf X-Forwarded-Proto "https" HTTPS=on
+</IfModule>
+
+# LiteSpeed HTTPS parameter
+<IfModule LiteSpeed>
+    SetEnvIf X-Forwarded-Proto "https" HTTPS=on
+</IfModule>
+
 # PHP Settings for LiteSpeed
 php_value memory_limit 512M
 php_value max_execution_time 300

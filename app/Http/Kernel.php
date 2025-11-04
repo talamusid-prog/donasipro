@@ -9,6 +9,7 @@ class Kernel extends HttpKernel
     // Tambahkan global middleware agar Laravel mempercayai header proxy
     protected $middleware = [
         \App\Http\Middleware\TrustProxies::class,
+        \App\Http\Middleware\SecurityHeaders::class,
     ];
 
     /**

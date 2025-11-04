@@ -164,7 +164,7 @@
                 <div class="flex-1 flex flex-col p-3">
                     <div class="flex gap-2 mb-2">
                         <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100/50 text-gray-700/80 backdrop-blur-sm">Aktif</span>
-                        <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-brand-blue/50 text-white/90 backdrop-blur-sm">Unggulan</span>
+                        <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-600 text-white backdrop-blur-sm">Unggulan</span>
                         @if($campaign->category_id && $campaign->category && is_object($campaign->category))
                             <span class="px-2 py-0.5 rounded-full text-xs font-semibold backdrop-blur-sm" style="background-color: {{ $campaign->category->color }}50; color: {{ $campaign->category->color }};">{{ $campaign->category->name }}</span>
                         @endif
@@ -189,7 +189,7 @@
                 <div class="flex-1 flex flex-col p-3">
                     <div class="flex gap-2 mb-2">
                         <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-gray-100/50 text-gray-700/80 backdrop-blur-sm">Aktif</span>
-                        <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-brand-blue/50 text-white/90 backdrop-blur-sm">Unggulan</span>
+                        <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-600 text-white backdrop-blur-sm">Unggulan</span>
                     </div>
                     <h3 class="font-bold text-sm mb-2 leading-tight">Belum ada campaign unggulan</h3>
                     <div class="w-full bg-gray-200 rounded-full h-1 mb-2">
